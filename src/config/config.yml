@@ -1,0 +1,5 @@
+db:
+  mysql:
+    host: 127.0.0.1
+    name: 'my-sql'
+DATA_BASE: 3309

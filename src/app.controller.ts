@@ -1,17 +1,22 @@
 import { Controller, Get } from '@nestjs/common';
 import { Req, Res, HttpCode, Header } from '@nestjs/common/decorators';
 import { HttpStatus } from '@nestjs/common/enums';
-import { Console } from 'console';
-import { Response, Request, response } from 'express';
-import { request } from 'http';
+import { Response, Request } from 'express';
 import { AppService } from './app.service';
+import { ConfigService } from '@nestjs/config/dist';
+import { ConfigEnum } from './enum/config.enum';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    // 相当于注册使用
+    private configService: ConfigService,
+  ) {}
 
   @Get()
   getHello(): string {
+    console.log('环境变量', this.configService.get(ConfigEnum.DB));
     return this.appService.getHello();
   }
   @Get('nihao')
