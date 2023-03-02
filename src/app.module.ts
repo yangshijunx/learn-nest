@@ -2,9 +2,11 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './configuration';
 import * as Joi from 'joi';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { ConfigEnum } from './enum/config.enum';
 
 @Module({
   imports: [
@@ -13,9 +15,47 @@ import * as Joi from 'joi';
       isGlobal: true,
       load: [configuration],
       validationSchema: Joi.object({
-        DATA_BASE: Joi.number().valid(3307, 3308),
+        DB_TYPE: Joi.string().default('mysql'),
+        DB_HOST: Joi.string().ip(),
+        DB_PORT: Joi.number().default(3306),
+        DB_USERNAME: Joi.string(),
+        DB_PASSWORD: Joi.string(),
+        DB_NAME: Joi.string(),
+        DB_SYNC: Joi.boolean().default(false),
       }),
     }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return {
+          type: configService.get(ConfigEnum.DB_TYPE),
+          host: configService.get(ConfigEnum.DB_HOST),
+          port: configService.get(ConfigEnum.DB_PORT),
+          username: configService.get(ConfigEnum.DB_USERNAME),
+          password: configService.get(ConfigEnum.DB_PASSWORD),
+          database: configService.get(ConfigEnum.DB_NAME),
+          entities: [],
+          // 同步本地的schema到数据库 -> 初始化的时候会去使用
+          synchronize: configService.get(ConfigEnum.DB_SYNC),
+          logging: ['error'],
+          // 不然这里 useFactory 会报错上面要对配置进行校验
+          // 参考https://github.com/nestjs/nest/issues/1119
+        } as TypeOrmModuleOptions;
+      },
+    }),
+    // TypeOrmModule.forRoot({
+    //   type: 'mysql',
+    //   host: 'localhost',
+    //   port: 3306,
+    //   username: 'root',
+    //   password: 'root',
+    //   database: 'testapi',
+    //   entities: [],
+    //   // 同步本地的schema到数据库 -> 初始化的时候会去使用
+    //   synchronize: true,
+    //   logging: ['error'],
+    // }),
   ],
   // 我们在app.module导入之后，在app.module的controllers和providers中都是可以使用的
   // 设置isGlobal: true, 否则都需要在使用的module下面导入，使用

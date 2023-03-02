@@ -16,7 +16,8 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    console.log('环境变量', this.configService.get(ConfigEnum.DB));
+    console.log('环境变量', this.configService.get(ConfigEnum.DATA_BASE));
+
     return this.appService.getHello();
   }
   @Get('nihao')
