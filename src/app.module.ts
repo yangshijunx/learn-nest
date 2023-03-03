@@ -7,6 +7,10 @@ import configuration from './configuration';
 import * as Joi from 'joi';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigEnum } from './enum/config.enum';
+import { User } from './user/user.entity';
+import { UserProfile } from './user/profile.entity';
+import { UserLogs } from './logs/logs.entity';
+import { Roles } from './roles/roles.entity';
 
 @Module({
   imports: [
@@ -28,6 +32,7 @@ import { ConfigEnum } from './enum/config.enum';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
+        console.log('环境变量', configService.get(ConfigEnum.DB_SYNC));
         return {
           type: configService.get(ConfigEnum.DB_TYPE),
           host: configService.get(ConfigEnum.DB_HOST),
@@ -35,9 +40,9 @@ import { ConfigEnum } from './enum/config.enum';
           username: configService.get(ConfigEnum.DB_USERNAME),
           password: configService.get(ConfigEnum.DB_PASSWORD),
           database: configService.get(ConfigEnum.DB_NAME),
-          entities: [],
+          entities: [User, UserProfile, UserLogs, Roles],
           // 同步本地的schema到数据库 -> 初始化的时候会去使用
-          synchronize: configService.get(ConfigEnum.DB_SYNC),
+          synchronize: true,
           logging: ['error'],
           // 不然这里 useFactory 会报错上面要对配置进行校验
           // 参考https://github.com/nestjs/nest/issues/1119
