@@ -1,3 +1,4 @@
+import { profile } from 'console';
 import { UserLogs } from 'src/logs/logs.entity';
 import { Roles } from 'src/roles/roles.entity';
 import {
@@ -7,7 +8,9 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  OneToOne,
 } from 'typeorm';
+import { UserProfile } from './profile.entity';
 
 @Entity()
 export class User {
@@ -31,4 +34,8 @@ export class User {
   // 多对多需要一个中间表 jointables
   @JoinTable({ name: 'user_roles' })
   roles: Roles[];
+
+  // 第二个参数对应profile模型中的①处
+  @OneToOne(() => UserProfile, (userprofile) => userprofile.user)
+  userprofile: UserProfile;
 }

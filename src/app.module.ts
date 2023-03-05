@@ -43,7 +43,9 @@ import { Roles } from './roles/roles.entity';
           entities: [User, UserProfile, UserLogs, Roles],
           // 同步本地的schema到数据库 -> 初始化的时候会去使用
           synchronize: true,
-          logging: ['error'],
+          // logging：true会打印所有转换的sql语句
+          // logging: ['error'],
+          logging: process.env.NODE_ENV === 'development',
           // 不然这里 useFactory 会报错上面要对配置进行校验
           // 参考https://github.com/nestjs/nest/issues/1119
         } as TypeOrmModuleOptions;

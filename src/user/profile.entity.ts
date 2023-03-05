@@ -25,5 +25,6 @@ export class UserProfile {
   @OneToOne(() => User)
   // joinColumn 用于指定外键的名称
   @JoinColumn({ name: 'user_id' })
+  // ①对应这里
   user: User;
 }
