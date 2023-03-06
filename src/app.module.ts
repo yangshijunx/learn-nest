@@ -11,6 +11,8 @@ import { User } from './user/user.entity';
 import { UserProfile } from './user/profile.entity';
 import { UserLogs } from './logs/logs.entity';
 import { Roles } from './roles/roles.entity';
+import { LoggerModule } from 'nestjs-pino';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -44,11 +46,41 @@ import { Roles } from './roles/roles.entity';
           // 同步本地的schema到数据库 -> 初始化的时候会去使用
           synchronize: true,
           // logging：true会打印所有转换的sql语句
-          // logging: ['error'],
-          logging: process.env.NODE_ENV === 'development',
+          logging: ['error', 'log', 'warn'],
+          // logging: process.env.NODE_ENV === 'development',
           // 不然这里 useFactory 会报错上面要对配置进行校验
           // 参考https://github.com/nestjs/nest/issues/1119
         } as TypeOrmModuleOptions;
+      },
+    }),
+    // 使用 pino 打印日志
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport: {
+          targets: [
+            process.env.NODE_ENV === 'development'
+              ? {
+                  level: 'info',
+                  target: 'pino-pretty',
+                  options: {
+                    colorize: true,
+                  },
+                }
+              : // 生产环境直接存起来就可以了
+                {
+                  level: 'info',
+                  target: 'pino-roll',
+                  options: {
+                    file: join('logs', 'log.txt'),
+                    // 日志滚动时间
+                    frequency: 'daily', // hourly
+                    // 单个日志文件大小
+                    size: '10m',
+                    mkdir: true,
+                  },
+                },
+          ],
+        },
       },
     }),
     // TypeOrmModule.forRoot({

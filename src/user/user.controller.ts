@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Logger } from '@nestjs/common';
 import { Post, Req } from '@nestjs/common/decorators';
 import { get } from 'http';
 import { Response, Request } from 'express';
@@ -6,12 +6,17 @@ import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
+  private logger = new Logger(UserController.name);
+
   constructor(private UserService: UserService) {
     // 这里是语法糖等同于this.UserService = new UserService
+    // shell 打印日志
+    this.logger.log('UserController init');
   }
   // 这里写路由
   @Get('all')
   getUser(): any {
+    this.logger.log('获取用户信息成功');
     return this.UserService.findAll();
   }
 
