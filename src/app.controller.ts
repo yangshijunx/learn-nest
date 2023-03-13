@@ -45,4 +45,13 @@ export class AppController {
       message: 'testcode',
     };
   }
+
+  @Get('testData')
+  // @Header('Access-Control-Allow-Origin', '*')
+  // @Header('Access-Control-Allow-Headers', '*')
+  // @Header('Access-Control-Allow-Methods', '*')
+  @Header('Cache-Control', 'none')
+  getTestData(): any {
+    return this.appService.testData();
+  }
 }
