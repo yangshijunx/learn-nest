@@ -4,7 +4,7 @@ import * as yaml from 'js-yaml';
 import * as _ from 'loadsh';
 
 const YAML_COMMON_CONFIG_FILENAME = 'config.yml';
-console.log('当前文件夹目录');
+// console.log('当前文件夹目录');
 const filePath = resolve(
   __dirname,
   '../',

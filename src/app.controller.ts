@@ -17,7 +17,6 @@ export class AppController {
   @Get()
   getHello(): string {
     console.log('环境变量', this.configService.get(ConfigEnum.DATA_BASE));
-
     return this.appService.getHello();
   }
   @Get('nihao')
@@ -26,7 +25,7 @@ export class AppController {
   }
   @Get('getReq')
   getReq(@Req() request: Request, @Res() response: Response): any {
-    console.log(request.query, request.params, request.ip, request.hostname);
+    // console.log(request.query, request.params, request.ip, request.hostname);
     // return 'This action returns all cats';
     // 通过获取到ts的类型，我想你应该理解这个对象的意义，如果你调用了
     // Req和Res那么这个时候你就需要手动的res.sed(),不推荐 如果你直接

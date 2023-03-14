@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Logger, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -13,7 +13,10 @@ import { UserLogs } from './logs/logs.entity';
 import { Roles } from './roles/roles.entity';
 import { LoggerModule } from 'nestjs-pino';
 import { join } from 'path';
+import { LogsModule } from './logs/logs.module';
 
+// 将其设置为全局模块，以便在整个应用程序中使用它
+@Global()
 @Module({
   imports: [
     UserModule,
@@ -60,6 +63,8 @@ import { join } from 'path';
           targets: [
             process.env.NODE_ENV === 'development'
               ? {
+                  // level: '',
+                  // 这里关闭pino日志,其实也不是关闭就是看不见了
                   level: 'info',
                   target: 'pino-pretty',
                   options: {
@@ -83,6 +88,7 @@ import { join } from 'path';
         },
       },
     }),
+    LogsModule,
     // TypeOrmModule.forRoot({
     //   type: 'mysql',
     //   host: 'localhost',
@@ -99,6 +105,10 @@ import { join } from 'path';
   // 我们在app.module导入之后，在app.module的controllers和providers中都是可以使用的
   // 设置isGlobal: true, 否则都需要在使用的module下面导入，使用
   controllers: [AppController],
-  providers: [AppService],
+  // 这里为什么从providers中导入了Logger，因为我们在app.module.ts中使用了LoggerModule
+  // 所以在这里就可以使用Logger了,相当于重写了nestjs的Logger
+  // 官方参考地址：https://docs.nestjs.com/techniques/logger
+  providers: [AppService, Logger],
+  exports: [Logger],
 })
 export class AppModule {}
