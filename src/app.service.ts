@@ -1,8 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
   getHello(): string {
+    const user = { admin: true };
+    if (user.admin) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
     return 'Hello World!';
   }
   getNihao(): string {
