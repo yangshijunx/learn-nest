@@ -42,6 +42,13 @@ export class UserService {
       },
     });
   }
+  getUserById(id: number) {
+    return this.userRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+  }
   // 聚合查询,将查询数据进行聚合
   findUserLogsByGroup(id: number) {
     // 可以直接使用sql语句，if you want

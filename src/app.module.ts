@@ -48,8 +48,8 @@ import { LogsModule } from './logs/logs.module';
           entities: [User, UserProfile, UserLogs, Roles],
           // 同步本地的schema到数据库 -> 初始化的时候会去使用
           synchronize: true,
-          // logging：true会打印所有转换的sql语句
-          logging: ['error', 'log', 'warn'],
+          logging: true, //会打印所有转换的sql语句
+          // logging: ['error', 'log', 'warn'],
           // logging: process.env.NODE_ENV === 'development',
           // 不然这里 useFactory 会报错上面要对配置进行校验
           // 参考https://github.com/nestjs/nest/issues/1119
@@ -65,7 +65,7 @@ import { LogsModule } from './logs/logs.module';
               ? {
                   // level: '',
                   // 这里关闭pino日志,其实也不是关闭就是看不见了
-                  level: 'info',
+                  level: 'error',
                   target: 'pino-pretty',
                   options: {
                     colorize: true,

@@ -1,5 +1,5 @@
 import { Controller, Get, Logger, LoggerService } from '@nestjs/common';
-import { Inject, Post, Req } from '@nestjs/common/decorators';
+import { Inject, Param, Post, Query, Req } from '@nestjs/common/decorators';
 import { get } from 'http';
 import { Response, Request } from 'express';
 import { UserService } from './user.service';
@@ -38,7 +38,7 @@ export class UserController {
 
   // 删除用户
   @Post('deleteUserById')
-  deleteUserById(@Req() request: Request): any {
+  deleteUserById(@Query() request: Request): any {
     // console.log('请求入参', request);
     return this.UserService.deleteUserById(Number(request.query.id));
   }
@@ -46,7 +46,7 @@ export class UserController {
   // 更新用户
   @Get('updateUserById')
   updateUserById(@Req() request: Request): any {
-    // console.log('请求入参', request);
+    console.log('请求入参', request);
     return this.UserService.updateUserById(Number(request.query.id));
   }
 
@@ -55,6 +55,18 @@ export class UserController {
   getProfileByUserId(@Req() request: Request): any {
     // console.log('请求入参', process.env);
     return this.UserService.getProfileByUserId(Number(request.query.id));
+  }
+  // 通过id查找用户
+  @Get('getUserById')
+  getUserById(@Query() request: any): any {
+    console.log('通过id请求入参', request);
+    let { id } = request;
+    try {
+      id = Number(id);
+    } catch (error) {
+      console.log('error', error);
+    }
+    return this.UserService.getUserById(id);
   }
 
   // 查找用户关联profile

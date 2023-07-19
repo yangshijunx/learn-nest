@@ -100,7 +100,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
   // 全局使用自定义过滤器
   app.useGlobalFilters(new HttpExceptionFilter(logger));
-  const port = 3000;
+  const port = 4444;
   await app.listen(port);
   Logger.log(`APP运行在：${port}`);
 }
