@@ -1,5 +1,12 @@
 import { Controller, Get, Logger, LoggerService } from '@nestjs/common';
-import { Inject, Param, Post, Query, Req } from '@nestjs/common/decorators';
+import {
+  Body,
+  Inject,
+  Param,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common/decorators';
 import { get } from 'http';
 import { Response, Request } from 'express';
 import { UserService } from './user.service';
@@ -81,5 +88,37 @@ export class UserController {
       result: item.result,
       count: item.count,
     }));
+  }
+  // post登录接口
+  @Post('login')
+  async login(@Body() request: any): Promise<any> {
+    const { username, password } = request;
+    // console.log('登录入参', request, username, password);
+    if (!username || !password) {
+      return {
+        code: 401,
+        message: '登录失败',
+        data: null,
+      };
+    }
+    // 如果可以查到用户就返回用户信息，状态码200，如果查不到就返回null，状态码401
+    const res = await this.UserService.login(
+      username as string,
+      password as string,
+    );
+    console.log('登录结果', res);
+    if (res) {
+      return {
+        code: 200,
+        message: '登录成功',
+        data: res,
+      };
+    } else {
+      return {
+        code: 401,
+        message: '登录失败',
+        data: null,
+      };
+    }
   }
 }

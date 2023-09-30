@@ -76,4 +76,13 @@ export class UserService {
         .getRawMany()
     );
   }
+  // 登录
+  login(username: string, password: string) {
+    return this.userRepository.findOne({
+      where: {
+        username,
+        password,
+      },
+    });
+  }
 }
