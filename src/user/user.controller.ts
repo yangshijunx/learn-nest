@@ -6,9 +6,10 @@ import {
   Post,
   Query,
   Req,
+  Res,
 } from '@nestjs/common/decorators';
 import { get } from 'http';
-import { Response, Request } from 'express';
+import { Response, Request, response } from 'express';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -91,15 +92,19 @@ export class UserController {
   }
   // post登录接口
   @Post('login')
-  async login(@Body() request: any): Promise<any> {
+  async login(@Body() request: any, @Res() response: Response): Promise<any> {
+    // console.log('登录入参', response);
     const { username, password } = request;
     // console.log('登录入参', request, username, password);
     if (!username || !password) {
-      return {
-        code: 401,
-        message: '登录失败',
-        data: null,
-      };
+      response
+        .status(401)
+        .send({
+          status: 401,
+          message: '登录失败',
+          data: null,
+        })
+        .end();
     }
     // 如果可以查到用户就返回用户信息，状态码200，如果查不到就返回null，状态码401
     const res = await this.UserService.login(
@@ -108,17 +113,23 @@ export class UserController {
     );
     console.log('登录结果', res);
     if (res) {
-      return {
-        code: 200,
-        message: '登录成功',
-        data: res,
-      };
+      response
+        .status(200)
+        .send({
+          status: 200,
+          message: '登录成功',
+          data: res,
+        })
+        .end();
     } else {
-      return {
-        code: 401,
-        message: '登录失败',
-        data: null,
-      };
+      response
+        .status(401)
+        .send({
+          status: 401,
+          message: '登录失败',
+          data: null,
+        })
+        .end();
     }
   }
 }
