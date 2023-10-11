@@ -14,6 +14,7 @@ import { Roles } from './roles/roles.entity';
 import { LoggerModule } from 'nestjs-pino';
 import { join } from 'path';
 import { LogsModule } from './logs/logs.module';
+import { AuthModule } from './auth/auth.module';
 
 // 将其设置为全局模块，以便在整个应用程序中使用它
 @Global()
@@ -89,6 +90,7 @@ import { LogsModule } from './logs/logs.module';
       },
     }),
     LogsModule,
+    AuthModule,
     // TypeOrmModule.forRoot({
     //   type: 'mysql',
     //   host: 'localhost',
